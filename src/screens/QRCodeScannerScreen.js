@@ -86,9 +86,15 @@ export default function QRCodeScannerScreen({ navigation }) {
   }
 
   const renderScannedItem = ({ item }) => {
-    <TouchableOpacity onPress={() => setScannedInfo(item.itemValue)}>
+    return (
+      <TouchableOpacity onPress={() => { setScannedInfo(item.itemValue); setModalVisible(true); }}>
+        <ScannedItem
+          id={item.id}
+          data={item.itemValue}
+          onPress={() => { removeItem(item.id); }} />
+      </TouchableOpacity>
+    )
 
-    </TouchableOpacity>
   }
   return (
     <>
@@ -105,7 +111,7 @@ export default function QRCodeScannerScreen({ navigation }) {
 
                 <FlatList
                   data={scannedQRCodes}
-                  renderItem={({ item }) => <ScannedItem id={item.id} openModal={() => setModalVisible(true)} data={item.itemValue} onPress={() => { removeItem(item.id); }} />}
+                  renderItem={renderScannedItem}
                   keyExtractor={(item) => item.id}
                 />
                 <View style={{ marginTop: 10 }} >

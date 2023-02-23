@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import * as Linking from 'expo-linking';
 
 export const ScannedItemModal = ({ modalVisible, openModal, closeModal, scanned }) => {
+
+  const openLink = () => {
+    Linking.openURL(scanned);
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -11,7 +16,11 @@ export const ScannedItemModal = ({ modalVisible, openModal, closeModal, scanned 
         visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>{scanned}</Text>
+            <Text>Go to link</Text>
+            <Pressable onPress={() => openLink()} style={{ marginBottoma: 20 }}>
+              <Text style={styles.modalText}>{scanned}</Text>
+            </Pressable>
+
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={closeModal}>
@@ -61,6 +70,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
+    color: 'blue',
+    fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
   },

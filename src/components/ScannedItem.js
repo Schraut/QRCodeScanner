@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function ScannedItem({ id, data, onPress, openModal }) {
+export default function ScannedItem({ data, onPress }) {
 
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text>{data}</Text>
-        <Pressable style={styles.removeBtn}>
-          <Text onPress={onPress}>X</Text>
+        <Pressable style={styles.removeBtn} onPress={onPress}>
+          <Text>X</Text>
         </Pressable>
       </View>
     </View>

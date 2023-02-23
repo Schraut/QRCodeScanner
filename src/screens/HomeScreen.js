@@ -6,7 +6,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Pressable onPress={() => navigation.navigate('QRCodeScannerScreen')} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 8 }}>
-        <Text style={{ color: 'white' }}>Home button</Text>
+        <Text style={{ color: 'white' }}>Start Scanning</Text>
       </Pressable>
     </View>
   );
