@@ -122,7 +122,6 @@ export default function QRCodeScannerScreen({ navigation }) {
 
               :
               <View style={styles.cameraContainer}>
-                {/* <View style={styles.top}></View> */}
                 <BarCodeScanner style={styles.camera} ref={cameraRef} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}>
                   <View style={styles.buttonContainer}>
                     {/* <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
@@ -152,25 +151,21 @@ export default function QRCodeScannerScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 60
+    paddingTop: Platform.OS === 'android' ? 25 : 0
   },
   cameraContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'grey'
+  },
+  camera: {
+    height: '100%'
   },
   flatlistContainer: {
 
   },
-  camera: {
-    flex: 1,
-  },
+
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    margin: 64,
   },
   button: {
     flex: 1,
@@ -182,4 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  top: {
+
+  }
 });
