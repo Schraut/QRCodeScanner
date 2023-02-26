@@ -4,23 +4,23 @@ import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'rea
 export default function ScannedItem({ data, onPress }) {
   const [showBtns, setShowBtns] = useState(false);
 
-  const CustomBtn = ({ text }) => {
+  const CustomBtn = ({ text, onPress }) => {
     return (
-      <Pressable style={styles.button}>
+      <Pressable onPress={onPress} style={styles.button} >
         <Text style={styles.btnText}>{text}</Text>
       </Pressable>
     )
   }
 
   return (
-    <Pressable onPress={() => setShowBtns(!showBtns)} style={styles.container}>
+    <Pressable style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.text}>{data}</Text>
       </View>
       {showBtns &&
 
         <View style={styles.btnContainer}>
-          <CustomBtn text={"Open Link"} />
+          <CustomBtn onPress={onPress} text={"Open Link"} />
           <CustomBtn text={"Save"} />
           <CustomBtn text={"Share"} />
         </View>
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   btnContainer: {
+    marginTop: 12,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },

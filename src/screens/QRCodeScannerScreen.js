@@ -1,13 +1,18 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Button, FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScannedItem from '../components/ScannedItem';
 import { ScannedItemModal } from '../components/ScannedItemModal';
 
-var keyGenerator = 0;
+
 // array to hold scanned qr codes
-var scannedQRCodes = [];
+var scannedQRCodes = [
+  { id: "1", itemValue: "www.google.com" },
+  { id: "2", itemValue: "www.google.com" },
+  { id: "3", itemValue: "www.google.com" },
+  { id: "4", itemValue: "www.google.com" },
+];
 export default function QRCodeScannerScreen({ navigation }) {
 
   const cameraRef = useRef(null);
@@ -18,9 +23,6 @@ export default function QRCodeScannerScreen({ navigation }) {
   const [scanned, setScanned] = useState(false);
 
   const [scannedQRs, setScannedQRs] = useState([]);
-
-
-  const [modalVisible, setModalVisible] = useState(false);
 
   const [scannedInfo, setScannedInfo] = useState("default");
 
@@ -91,10 +93,17 @@ export default function QRCodeScannerScreen({ navigation }) {
         <ScannedItem
           id={item.id}
           data={item.itemValue}
-          onPress={() => { removeItem(item.id); }} />
+          onPress={() => { removeItem(item.id); }}
+        // onPress={() => openLink()}
+        />
       </TouchableOpacity>
     )
 
+  }
+
+
+  const openLink = () => {
+    Linking.openURL(scanned);
   }
   return (
     <>
@@ -143,7 +152,6 @@ export default function QRCodeScannerScreen({ navigation }) {
           </View>
         }
       </View>
-      <ScannedItemModal modalVisible={modalVisible} closeModal={() => setModalVisible(false)} scanned={scannedInfo} />
     </>
   )
 
@@ -151,7 +159,9 @@ export default function QRCodeScannerScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === 'android' ? 25 : 0
+    marginTop: 50,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
+    paddingHorizontal: 10,
   },
   cameraContainer: {
   },
