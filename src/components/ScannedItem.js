@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function ScannedItem({ data, onPress }) {
+export default function ScannedItem({ data, open, remove }) {
   const [showBtns, setShowBtns] = useState(false);
 
   const CustomBtn = ({ text, onPress }) => {
@@ -13,19 +13,16 @@ export default function ScannedItem({ data, onPress }) {
   }
 
   return (
-    <Pressable style={styles.container}>
+    <Pressable onPress={() => setShowBtns(!showBtns)} style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.text}>{data}</Text>
       </View>
       {showBtns &&
-
         <View style={styles.btnContainer}>
-          <CustomBtn onPress={onPress} text={"Open Link"} />
-          <CustomBtn text={"Save"} />
-          <CustomBtn text={"Share"} />
+          <CustomBtn onPress={open} text={"Open Link"} />
+          {/* <CustomBtn text={"Save"} /> */}
+          <CustomBtn onPress={remove} text={"Remove"} />
         </View>
-
-
       }
     </Pressable>
   );

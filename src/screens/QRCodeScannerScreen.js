@@ -8,7 +8,7 @@ import { ScannedItemModal } from '../components/ScannedItemModal';
 
 // array to hold scanned qr codes
 var scannedQRCodes = [
-  { id: "1", itemValue: "www.google.com" },
+  { id: "1", itemValue: "market://details?id=com.cedr.csc" },
   { id: "2", itemValue: "www.google.com" },
   { id: "3", itemValue: "www.google.com" },
   { id: "4", itemValue: "www.google.com" },
@@ -25,6 +25,8 @@ export default function QRCodeScannerScreen({ navigation }) {
   const [scannedQRs, setScannedQRs] = useState([]);
 
   const [scannedInfo, setScannedInfo] = useState("default");
+  const [expand, setExpand] = useState(false);
+  const [showBtns, setShowBtns] = useState(false);
 
 
   useEffect(() => {
@@ -87,23 +89,24 @@ export default function QRCodeScannerScreen({ navigation }) {
     setScannedQRs(filteredData);
   }
 
+
   const renderScannedItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => { setScannedInfo(item.itemValue); setModalVisible(true); }}>
-        <ScannedItem
-          id={item.id}
-          data={item.itemValue}
-          onPress={() => { removeItem(item.id); }}
-        // onPress={() => openLink()}
-        />
-      </TouchableOpacity>
+      <ScannedItem
+        id={item.id}
+        data={item.itemValue}
+        remove={() => { removeItem(item.id); }}
+        open={() => openLink(item.itemValue)}
+      />
     )
 
   }
 
 
-  const openLink = () => {
-    Linking.openURL(scanned);
+
+
+  const openLink = (url) => {
+    Linking.openURL(url);
   }
   return (
     <>
