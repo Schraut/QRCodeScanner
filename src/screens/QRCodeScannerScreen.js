@@ -105,8 +105,15 @@ export default function QRCodeScannerScreen({ navigation }) {
 
 
 
-  const openLink = (url) => {
-    Linking.openURL(url);
+  const openLink = async (url) => {
+    Linking.openURL("hey");
+    // if (url.includes("https://")) {
+    //   Linking.openURL(url);
+    // } else {
+    //   await WebBrowser.openBrowserAsync('hey');
+    //   //setResult(result);
+    // }
+
   }
   return (
     <>

@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "QRCodeScanner",
+    "owner": "danshrout",
     "slug": "QRCodeScanner",
     "version": "1.0.0",
     "orientation": "portrait",
