@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CustomBtn } from './buttons/CustomBtn';
 
-export default function ScannedItem({ data, open, remove }) {
+export type Props = {
+  data: string;
+  open(): void;
+  remove(): void;
+  onPress(): void;
+};
+
+export const ScannedItem: React.FC<Props> = ({ data, open, remove }) => {
   const [showBtns, setShowBtns] = useState(false);
-
-  const CustomBtn = ({ text, onPress }) => {
-    return (
-      <Pressable onPress={onPress} style={styles.button} >
-        <Text style={styles.btnText}>{text}</Text>
-      </Pressable>
-    )
-  }
 
   return (
     <Pressable onPress={() => setShowBtns(!showBtns)} style={styles.container}>
@@ -42,15 +42,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     flexDirection: 'row',
     justifyContent: 'space-between'
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 18
-  },
-  button: {
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: 'blue'
   },
   text: {
     fontSize: 20,
