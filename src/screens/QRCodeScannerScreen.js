@@ -2,8 +2,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
 import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import ScannedItem from '../components/ScannedItem';
-import { ScannedItemModal } from '../components/ScannedItemModal';
+import { ScannedItem } from '../components/ScannedItem';
 
 
 // array to hold scanned qr codes
