@@ -1,27 +1,27 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { ScannedItem } from '../components/ScannedItem';
 
 
 // array to hold scanned qr codes
-var scannedQRCodes = [
+var scannedQRCodes: { id: String, itemValue: String }[] = [
   { id: "1", itemValue: "market://details?id=com.cedr.csc" },
   { id: "2", itemValue: "www.google.com" },
   { id: "3", itemValue: "www.google.com" },
   { id: "4", itemValue: "www.google.com" },
 ];
-export default function QRCodeScannerScreen({ navigation }) {
+export default function QRCodeScannerScreen() {
 
   const cameraRef = useRef(null);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState(false);
 
   const [showQRCodeScanner, setShowQRCodeScanner] = useState(false);
 
   const [scanned, setScanned] = useState(false);
 
-  const [scannedQRs, setScannedQRs] = useState([]);
+  const [scannedQRs, setScannedQRs] = useState<object[]>([]);
 
   const [scannedInfo, setScannedInfo] = useState("default");
   const [expand, setExpand] = useState(false);
@@ -51,7 +51,12 @@ export default function QRCodeScannerScreen({ navigation }) {
 
   // };
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  type ScannedProps = {
+    type: string;
+    data: string;
+  };
+
+  const handleBarCodeScanned = ({ type, data }: ScannedProps) => {
 
     scannedQRCodes.push({ id: Math.random().toString(), itemValue: data });
     setScannedQRs(scannedQRCodes);
@@ -76,7 +81,7 @@ export default function QRCodeScannerScreen({ navigation }) {
   // }
 
 
-  const removeItem = (itemId) => {
+  const removeItem = (itemId: String) => {
     console.log(`removeItem(), to remove = ${itemId}`)
     // var index = scannedQRCodes.indexOf(itemToRemove);
     // if (index !== -1) {
@@ -89,7 +94,7 @@ export default function QRCodeScannerScreen({ navigation }) {
   }
 
 
-  const renderScannedItem = ({ item }) => {
+  const renderScannedItem = ({ item }: any) => {
     return (
       <ScannedItem
         id={item.id}
@@ -104,7 +109,7 @@ export default function QRCodeScannerScreen({ navigation }) {
 
 
 
-  const openLink = async (url) => {
+  const openLink = async (url: String) => {
     Linking.openURL("hey");
     // if (url.includes("https://")) {
     //   Linking.openURL(url);

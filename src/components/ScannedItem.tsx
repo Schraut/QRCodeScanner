@@ -3,10 +3,11 @@ import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { CustomBtn } from './buttons/CustomBtn';
 
 export type Props = {
+  id: Number;
   data: string;
   open(): void;
   remove(): void;
-  onPress(): void;
+  //onPress(): void;
 };
 
 export const ScannedItem: React.FC<Props> = ({ data, open, remove }) => {
