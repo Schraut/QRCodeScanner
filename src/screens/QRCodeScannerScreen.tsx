@@ -5,27 +5,17 @@ import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacit
 import { ScannedItem } from '../components/ScannedItem';
 
 
-// array to hold scanned qr codes
-var scannedQRCodes: { id: String, itemValue: String }[] = [
-  { id: "1", itemValue: "market://details?id=com.cedr.csc" },
-  { id: "2", itemValue: "www.google.com" },
-  { id: "3", itemValue: "www.google.com" },
-  { id: "4", itemValue: "www.google.com" },
-];
+// Array that will hold scanned qr codes
+var scannedQRCodes: { id: String, itemValue: String }[] = [];
+
 export default function QRCodeScannerScreen() {
 
   const cameraRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(false);
 
-  const [showQRCodeScanner, setShowQRCodeScanner] = useState(false);
-
   const [scanned, setScanned] = useState(false);
 
   const [scannedQRs, setScannedQRs] = useState<object[]>([]);
-
-  const [scannedInfo, setScannedInfo] = useState("default");
-  const [expand, setExpand] = useState(false);
-  const [showBtns, setShowBtns] = useState(false);
 
 
   useEffect(() => {
@@ -44,12 +34,6 @@ export default function QRCodeScannerScreen() {
     return <Text>No access to camera</Text>;
   }
 
-  // const handleBarCodeScanned = ({ type, data }) => {
-  //   // console.log("data = " + data);
-  //   // console.log("type = " + type);
-  //   setScanned(true);
-
-  // };
 
   type ScannedProps = {
     type: string;

@@ -2,10 +2,14 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import QRCodeScannerScreen from "../screens/QRCodeScannerScreen";
-import ScannedItemScreen from "../screens/ScannedItemScreen";
 
+export type RootStackParamList = {
+  HomeScreen: undefined;
+  QRCodeScannerScreen: undefined;
+};
+// undefined means that the route doesn't have params
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootNavigator = () => {
   return (
@@ -13,11 +17,11 @@ export const RootNavigator = () => {
       screenOptions={{
         header: () => null,
       }}
-      initialRouteName="Home"
+      initialRouteName="HomeScreen"
     >
       <Stack.Screen
         options={{
-          headerTitle: "Home",
+          headerTitle: "HomeScreen",
         }}
         name="HomeScreen"
         component={HomeScreen}
@@ -29,13 +33,7 @@ export const RootNavigator = () => {
         name="QRCodeScannerScreen"
         component={QRCodeScannerScreen}
       />
-      <Stack.Screen
-        options={{
-          headerTitle: "ScannedItemScreen",
-        }}
-        name="ScannedItemScreen"
-        component={ScannedItemScreen}
-      />
+
     </Stack.Navigator>
   );
 };
