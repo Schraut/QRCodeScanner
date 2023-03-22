@@ -1,7 +1,7 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Button, FlatList, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View, Platform, Alert } from 'react-native';
 import { ScannedItem } from '../components/ScannedItem';
 
 
@@ -93,14 +93,20 @@ export default function QRCodeScannerScreen() {
 
 
 
-  const openLink = async (url: String) => {
-    Linking.openURL("hey");
-    // if (url.includes("https://")) {
-    //   Linking.openURL(url);
-    // } else {
-    //   await WebBrowser.openBrowserAsync('hey');
-    //   //setResult(result);
-    // }
+  const openLink = async (url: string) => {
+
+    if (url.includes("https://")) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert('Invalid URL', 'This is not a valid url', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    }
 
   }
   return (
