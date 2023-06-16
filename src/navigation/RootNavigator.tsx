@@ -1,7 +1,7 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
-import QRCodeScannerScreen from "../screens/QRCodeScannerScreen";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from '../screens/HomeScreen';
+import QRCodeScannerScreen from '../screens/QRCodeScannerScreen';
 
 export type RootStackParamList = {
   HomeScreen: undefined;
@@ -17,23 +17,22 @@ export const RootNavigator = () => {
       screenOptions={{
         header: () => null,
       }}
-      initialRouteName="HomeScreen"
+      initialRouteName='QRCodeScannerScreen'
     >
       <Stack.Screen
         options={{
-          headerTitle: "HomeScreen",
+          headerTitle: 'HomeScreen',
         }}
-        name="HomeScreen"
+        name='HomeScreen'
         component={HomeScreen}
       />
       <Stack.Screen
         options={{
-          headerTitle: "QRCodeScannerScreen",
+          headerTitle: 'QRCodeScannerScreen',
         }}
-        name="QRCodeScannerScreen"
+        name='QRCodeScannerScreen'
         component={QRCodeScannerScreen}
       />
-
     </Stack.Navigator>
   );
 };
