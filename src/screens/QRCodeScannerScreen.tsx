@@ -1,24 +1,32 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Camera, CameraType } from 'expo-camera';
-import { useEffect, useRef, useState } from 'react';
+import { Camera } from 'expo-camera';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Button,
   FlatList,
   Linking,
-  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  Platform,
   Alert,
+  Pressable,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 //import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { ScannedItem } from '../components/ScannedItem';
+import { LinearGradientBackground } from '../components/LinearGradientBackground';
+import ScannerFrame from '../components/ScannerFrame';
 
 // Array that will hold scanned qr codes
 var scannedQRCodes: { id: String; itemValue: String }[] = [];
+
+const dummyData = [
+  { id: 1, itemValue: 'www.google.com' },
+  { id: 2, itemValue: 'https://reactnative.dev/docs/flatlist' },
+  { id: 3, itemValue: 'https://docs.expo.dev/versions/latest/sdk/sharing/' },
+  { id: 4, itemValue: 'www.google.com' },
+];
 
 export default function QRCodeScannerScreen() {
   const cameraRef = useRef(null);
@@ -136,178 +144,82 @@ export default function QRCodeScannerScreen() {
   };
   return (
     <>
-      <View style={styles.container}>
-        {hasPermission ? (
-          <>
-            {scanned ? (
-              <View style={styles.flatlistContainer}>
-                <View
-                  style={{ justifyContent: 'center', alignItems: 'center' }}
-                >
-                  <Text style={{ fontSize: 30 }}>
-                    Scanned Item{scannedQRCodes.length > 1 ? 's' : ''}
-                  </Text>
-                </View>
-
-                <FlatList
-                  data={scannedQRCodes}
-                  renderItem={renderScannedItem}
-                  keyExtractor={(item) => item.id}
-                />
-                <View style={{ marginTop: 10 }}>
-                  <Button
-                    title='Scan Again'
-                    onPress={() => setScanned(false)}
-                  />
-                </View>
+      <LinearGradientBackground />
+      {hasPermission ? (
+        <>
+          {scanned ? (
+            <View style={styles.flatlistContainer}>
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 30 }}>
+                  Scanned Item{scannedQRCodes.length > 1 ? 's' : ''}
+                </Text>
               </View>
-            ) : (
-              <Camera
-                style={styles.camera}
-                ref={cameraRef}
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-              >
-                <View // this takes up whole screen and centers the square
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <View // main container
-                    style={{
-                      height: 300,
-                      width: 300,
-                      justifyContent: 'space-between',
+
+              <FlatList
+                // data={dummyData}
+                data={scannedQRCodes}
+                renderItem={({ item }) => (
+                  <ScannedItem
+                    id={item.id}
+                    data={item.itemValue}
+                    remove={() => {
+                      removeItem(item.id);
                     }}
-                  >
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <View
-                          style={{
-                            height: 10,
-                            width: 30,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            height: 10,
-                            width: 30,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <View
-                          style={{
-                            height: 20,
-                            width: 10,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            height: 20,
-                            width: 10,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                      </View>
-                    </View>
+                    open={() => openLink(item.itemValue)}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
 
-                    {/* <Animated.View style={[{ opacity: fadeAnim }]}> */}
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: 'red',
-                      }}
-                    />
-                    {/* </Animated.View> */}
+              <View
+                style={{
+                  marginTop: 10,
+                  marginBottom: 40,
+                  alignItems: 'center',
+                }}
+              >
+                <Pressable onPress={() => setScanned(false)}>
+                  <Ionicons name='scan-circle-sharp' size={60} color='black' />
+                </Pressable>
 
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <View
-                          style={{
-                            height: 20,
-                            width: 10,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            height: 20,
-                            width: 10,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <View
-                          style={{
-                            height: 10,
-                            width: 30,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            height: 10,
-                            width: 30,
-                            backgroundColor: '#000000',
-                          }}
-                        ></View>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </Camera>
-            )}
-          </>
-        ) : (
-          // <View style={styles.container}>
-          //   <Text style={{ textAlign: 'center' }}>Start Scanning</Text>
-          //   <Button onPress={() => setShowQRCodeScanner(true)} title="Start Scanning" />
-          // </View>
-          <View style={styles.container}>
-            <Text style={{ textAlign: 'center' }}>
-              You don't have camera permission
-            </Text>
-          </View>
-        )}
-      </View>
+                <Text>Scan Again</Text>
+              </View>
+            </View>
+          ) : (
+            <Camera
+              style={styles.camera}
+              ref={cameraRef}
+              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            >
+              <ScannerFrame />
+            </Camera>
+          )}
+        </>
+      ) : (
+        // <View style={styles.container}>
+        //   <Text style={{ textAlign: 'center' }}>Start Scanning</Text>
+        //   <Button onPress={() => setShowQRCodeScanner(true)} title="Start Scanning" />
+        // </View>
+        <View style={styles.container}>
+          <Text style={{ textAlign: 'center' }}>
+            You don't have camera permission
+          </Text>
+        </View>
+      )}
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
   cameraContainer: {},
   camera: {
     height: '100%',
   },
-  flatlistContainer: {},
+  flatlistContainer: {
+    flex: 1,
+    marginTop: 70,
+    marginHorizontal: 20,
+  },
 
   buttonContainer: {
     flex: 1,
