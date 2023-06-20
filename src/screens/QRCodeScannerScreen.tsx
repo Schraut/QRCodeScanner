@@ -11,8 +11,10 @@ import {
   View,
   Alert,
   Pressable,
+  Modal,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 //import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { ScannedItem } from '../components/ScannedItem';
 import { LinearGradientBackground } from '../components/LinearGradientBackground';
@@ -37,6 +39,8 @@ export default function QRCodeScannerScreen() {
   const [scannedQRs, setScannedQRs] = useState<object[]>([]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
@@ -192,6 +196,7 @@ export default function QRCodeScannerScreen() {
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             >
               <ScannerFrame />
+              <View style={{ height: 60 }}></View>
             </Camera>
           )}
         </>
@@ -206,6 +211,13 @@ export default function QRCodeScannerScreen() {
           </Text>
         </View>
       )}
+      <View style={styles.centeredView}>
+        <Modal animationType='slide' transparent={true} visible={modalVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}></View>
+          </View>
+        </Modal>
+      </View>
     </>
   );
 }
@@ -214,6 +226,7 @@ const styles = StyleSheet.create({
   cameraContainer: {},
   camera: {
     height: '100%',
+    justifyContent: 'space-evenly',
   },
   flatlistContainer: {
     flex: 1,
@@ -237,4 +250,24 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   top: {},
+  centeredView: {
+    flex: 1,
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
 });
