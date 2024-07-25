@@ -1,8 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 import QRCodeScannerScreen from '../screens/QRCodeScannerScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import AboutScreen from '../screens/AboutScreen';
+import CodesScreen from '../screens/Codes';
 
 const Tab = createBottomTabNavigator();
 
@@ -10,7 +14,6 @@ export const BottomTabsNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
         tabBarShowLabel: true,
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'grey',
@@ -26,6 +29,7 @@ export const BottomTabsNavigator = () => {
         name='Scanner'
         component={QRCodeScannerScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Ionicons name='qr-code-outline' size={24} color='black' />
@@ -35,14 +39,28 @@ export const BottomTabsNavigator = () => {
         }}
       />
       <Tab.Screen
-        name='Settings'
-        component={SettingsScreen}
+        name='Codes'
+        component={CodesScreen}
         options={{
+          headerShown: true,
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons name='settings-sharp' size={24} color='black' />
+              <Entypo name='list' size={24} color='black' />
             ) : (
-              <Ionicons name='settings-outline' size={24} color='grey' />
+              <Entypo name='list' size={24} color='grey' />
+            ),
+        }}
+      />
+      <Tab.Screen
+        name='About'
+        component={AboutScreen}
+        options={{
+          headerShown: true,
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <AntDesign name='infocirlce' size={24} color='black' />
+            ) : (
+              <AntDesign name='infocirlce' size={24} color='grey' />
             ),
         }}
       />

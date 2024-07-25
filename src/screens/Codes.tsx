@@ -1,19 +1,24 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { LinearGradientBackground } from '../components/LinearGradientBackground';
 
-export default function SettingsScreen() {
+export default function CodesScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Pressable onPress={() => console.log('privacy policy')}>
-        <Text style={{}}>Privacy Policy</Text>
-      </Pressable>
-    </View>
+    <>
+      <LinearGradientBackground />
+      <View style={styles.container}>
+        <Text style={styles.text}>Scanned codes will show up here.</Text>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 20,
+    marginHorizontal: 10,
   },
   cameraContainer: {
     flex: 1,
@@ -36,7 +41,10 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: '500',
+    marginBottom: 40,
+  },
+  privacyPolicyText: {
+    fontSize: 18,
   },
 });

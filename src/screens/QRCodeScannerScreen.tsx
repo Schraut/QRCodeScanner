@@ -1,9 +1,7 @@
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Camera } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
+import { Camera, CameraView, useCameraPermissions } from "expo-camera";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
-  Button,
   FlatList,
   Linking,
   StyleSheet,
@@ -11,83 +9,66 @@ import {
   View,
   Alert,
   Pressable,
-  Modal,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Entypo, Ionicons } from '@expo/vector-icons';
+  Button,
+  Platform,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 //import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { ScannedItem } from '../components/ScannedItem';
-import { LinearGradientBackground } from '../components/LinearGradientBackground';
-import ScannerFrame from '../components/ScannerFrame';
+import { ScannedItem } from "../components/ScannedItem";
+import { LinearGradientBackground } from "../components/LinearGradientBackground";
+import ScannerFrame from "../components/ScannerFrame";
+import { useIsFocused } from "@react-navigation/native";
 
 // Array that will hold scanned qr codes
 var scannedQRCodes: { id: String; itemValue: String }[] = [];
 
-const dummyData = [
-  { id: 1, itemValue: 'www.google.com' },
-  { id: 2, itemValue: 'https://reactnative.dev/docs/flatlist' },
-  { id: 3, itemValue: 'https://docs.expo.dev/versions/latest/sdk/sharing/' },
-  { id: 4, itemValue: 'www.google.com' },
-];
-
 export default function QRCodeScannerScreen() {
   const cameraRef = useRef(null);
+  const isFocused = useIsFocused();
+  //const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
+  // console.log(`permission? ${permission?.granted}`);
   const [hasPermission, setHasPermission] = useState(false);
 
   const [scanned, setScanned] = useState(false);
 
   const [scannedQRs, setScannedQRs] = useState<object[]>([]);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start();
-  };
-
   useEffect(() => {
-    // setInterval(function () {
-    //   fadeIn();
-    // }, 1000);
-    //fadeOut();
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
+    getCameraPermissions();
+    // if (!permission) ...
 
-    getBarCodeScannerPermissions();
+    // if (!permission.granted) ...
+    //console.log(permission);
   }, []);
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
+  const getCameraPermissions = async () => {
+    console.log("await, request permission");
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    console.log("after status");
+    setHasPermission(status === "granted");
+  };
+
+  // switch()
+
+  // if (hasPermission === null) {
+  //   return <Text>Requesting for camera permission</Text>;
+  // }
+  // if (hasPermission === (false || null)) {
+  //   return <Text>No access to camera</Text>;
+  // }
+  // // This keeps the screen from going black on android
+  if (isFocused === false) {
+    console.log("User is somewhere else");
     return <Text>No access to camera</Text>;
   }
 
-  type ScannedProps = {
-    type: string;
-    data: string;
-  };
-
-  const handleBarCodeScanned = ({ type, data }: ScannedProps) => {
-    scannedQRCodes.push({ id: Math.random().toString(), itemValue: data });
-    setScannedQRs(scannedQRCodes);
+  const handleBarCodeScanned = (type: string, data: string) => {
+    let myScannedCodes = scannedQRCodes;
+    //scannedQRCodes.push({ id: Math.random().toString(), itemValue: data });
+    myScannedCodes.push({ id: Math.random().toString(), itemValue: data });
+    //setScannedQRs(scannedQRCodes);
+    setScannedQRs(myScannedCodes);
     setScanned(true);
     console.log(`scannedQRCodes ${JSON.stringify(scannedQRCodes)}`);
     //console.log("scanned array = " + scannedQRs);
@@ -97,17 +78,7 @@ export default function QRCodeScannerScreen() {
     // })
   };
 
-  // if (!permission.granted) {
-  //   // Camera permissions are not granted yet
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-  //       <Button onPress={requestPermission} title="grant permission" />
-  //     </View>
-  //   );
-  // }
-
-  const removeItem = (itemId: String) => {
+  const removeItem = (itemId: number) => {
     console.log(`removeItem(), to remove = ${itemId}`);
     // var index = scannedQRCodes.indexOf(itemToRemove);
     // if (index !== -1) {
@@ -133,19 +104,63 @@ export default function QRCodeScannerScreen() {
   };
 
   const openLink = async (url: string) => {
-    if (url.includes('https://')) {
+    if (url.includes("https://") || url.includes("http://")) {
       Linking.openURL(url);
     } else {
-      Alert.alert('Invalid URL', 'This is not a valid url', [
+      Alert.alert("Invalid URL", "This is not a valid url", [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
         },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
       ]);
     }
   };
+
+  const onBarCodeScanned = (scannedData: any) => {
+    console.log("scanned " + JSON.stringify(scannedData.data));
+    setScanned(true);
+    openLink(scannedData.data);
+  };
+
+  const scannedData = {
+    type: 256,
+    target: 677,
+    raw: "suppp",
+    data: "suppp",
+    cornerPoints: [
+      { y: 118.57142639160156, x: 184.85714721679688 },
+      { y: 242.57142639160156, x: 169.42857360839844 },
+      { y: 260.8571472167969, x: 255.14285278320312 },
+      { y: 136.85714721679688, x: 270.5714416503906 },
+    ],
+    boundingBox: {
+      size: { width: 142.2857208251953, height: 101.14286041259766 },
+      origin: { y: 169.42857360839844, x: 118.57142639160156 },
+    },
+  };
+
+  const openSettings = () => {
+    if (Platform.OS === "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      Linking.openSettings();
+    }
+  };
+
+  if (!hasPermission) {
+    // Camera permissions are not granted yet
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center" }}>
+          This app needs your permission in order to scan QR Codes.
+        </Text>
+        <Button onPress={openSettings} title='grant permission' />
+      </View>
+    );
+  }
+
   return (
     <>
       <LinearGradientBackground />
@@ -153,16 +168,16 @@ export default function QRCodeScannerScreen() {
         <>
           {scanned ? (
             <View style={styles.flatlistContainer}>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 30 }}>
-                  Scanned Item{scannedQRCodes.length > 1 ? 's' : ''}
+                  Scanned Item{scannedQRCodes.length > 1 ? "s" : ""}
                 </Text>
               </View>
 
               <FlatList
                 // data={dummyData}
-                data={scannedQRCodes}
-                renderItem={({ item }) => (
+                data={scannedQRs}
+                renderItem={(item: { id: number; itemValue: string }) => (
                   <ScannedItem
                     id={item.id}
                     data={item.itemValue}
@@ -172,14 +187,14 @@ export default function QRCodeScannerScreen() {
                     open={() => openLink(item.itemValue)}
                   />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
               />
 
               <View
                 style={{
                   marginTop: 10,
                   marginBottom: 40,
-                  alignItems: 'center',
+                  alignItems: "center",
                 }}
               >
                 <Pressable onPress={() => setScanned(false)}>
@@ -190,14 +205,15 @@ export default function QRCodeScannerScreen() {
               </View>
             </View>
           ) : (
-            <Camera
+            <CameraView
               style={styles.camera}
               ref={cameraRef}
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+              onBarcodeScanned={(e) => onBarCodeScanned(e)}
+              //onBarCodeScanned={onBarCodeScanned}
             >
               <ScannerFrame />
               <View style={{ height: 60 }}></View>
-            </Camera>
+            </CameraView>
           )}
         </>
       ) : (
@@ -206,27 +222,25 @@ export default function QRCodeScannerScreen() {
         //   <Button onPress={() => setShowQRCodeScanner(true)} title="Start Scanning" />
         // </View>
         <View style={styles.container}>
-          <Text style={{ textAlign: 'center' }}>
+          <Text style={{ textAlign: "center" }}>
             You don't have camera permission
           </Text>
         </View>
       )}
-      <View style={styles.centeredView}>
-        <Modal animationType='slide' transparent={true} visible={modalVisible}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}></View>
-          </View>
-        </Modal>
-      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   cameraContainer: {},
   camera: {
-    height: '100%',
-    justifyContent: 'space-evenly',
+    height: "100%",
+    justifyContent: "space-evenly",
   },
   flatlistContainer: {
     flex: 1,
@@ -236,38 +250,17 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
+    flexDirection: "row",
+    backgroundColor: "transparent",
   },
   button: {
     flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+    alignSelf: "flex-end",
+    alignItems: "center",
   },
   text: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  top: {},
-  centeredView: {
-    flex: 1,
-    backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    fontWeight: "bold",
+    color: "white",
   },
 });
